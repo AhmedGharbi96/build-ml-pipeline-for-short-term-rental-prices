@@ -9,6 +9,7 @@ import tempfile
 from pathlib import Path
 
 import pandas as pd
+
 import wandb
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
@@ -29,6 +30,10 @@ def go(args):
     logging.info("Starting data cleaning...")
     # Drop outliers
     idx = df["price"].between(args.min_price, args.max_price)
+    df = df[idx].copy()
+
+    # Drop rows outside allowed longitude and latitude
+    idx = df["longitude"].between(-74.25, -73.50) & df["latitude"].between(40.5, 41.2)
     df = df[idx].copy()
 
     # Convert last_review to datetime
